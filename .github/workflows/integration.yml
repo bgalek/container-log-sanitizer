@@ -42,7 +42,7 @@ jobs:
 
       - name: Install Docker plugin (local)
         run: |
-          docker plugin rm -f container-log-sanitizer
+          docker plugin rm -f container-log-sanitizer || true
           docker plugin create container-log-sanitizer ./plugin-rootfs
           docker plugin enable container-log-sanitizer
 
@@ -53,5 +53,5 @@ jobs:
       - name: Cleanup plugin
         if: always()
         run: |
-          docker plugin disable container-log-sanitizer
-          docker plugin rm container-log-sanitizer
+          docker plugin disable container-log-sanitizer || true
+          docker plugin rm container-log-sanitizer || true
