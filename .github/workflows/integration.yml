@@ -36,7 +36,7 @@ jobs:
             "description": "Container log sanitizer plugin",
             "interface": {
               "types": ["docker.logdriver/1.0"],
-              "socket": "plugin.sock"
+              "socket": "container-log-sanitizer.sock"
             },
             "entrypoint": ["/container-log-sanitizer"],
             "network": { "type": "host" },
