@@ -26,8 +26,8 @@ jobs:
 
       - name: Prepare plugin rootfs
         run: |
-          mkdir -p plugin-rootfs
-          cp container-log-sanitizer plugin-rootfs/
+          mkdir -p plugin-rootfs/rootfs
+          cp container-log-sanitizer plugin-rootfs/rootfs/
 
       - name: Create plugin config
         run: |
@@ -55,12 +55,13 @@ jobs:
       - name: List plugin rootfs contents (debug)
         run: |
           ls -l plugin-rootfs
-          file plugin-rootfs/container-log-sanitizer
+          ls -l plugin-rootfs/rootfs
+          file plugin-rootfs/rootfs/container-log-sanitizer
           cat plugin-rootfs/config.json
 
       - name: Check if binary is statically linked
         run: |
-          ldd plugin-rootfs/container-log-sanitizer || echo "Binary is statically linked (ldd failed as expected)"
+          ldd plugin-rootfs/rootfs/container-log-sanitizer || echo "Binary is statically linked (ldd failed as expected)"
 
       - name: Install Docker plugin (local)
         run: |
