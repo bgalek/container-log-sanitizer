@@ -58,6 +58,10 @@ jobs:
           file plugin-rootfs/container-log-sanitizer
           cat plugin-rootfs/config.json
 
+      - name: Check if binary is statically linked
+        run: |
+          ldd plugin-rootfs/container-log-sanitizer || echo "Binary is statically linked (ldd failed as expected)"
+
       - name: Install Docker plugin (local)
         run: |
           docker plugin rm -f container-log-sanitizer || true
