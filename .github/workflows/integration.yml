@@ -33,8 +33,22 @@ jobs:
         run: |
           cat > plugin-rootfs/config.json <<EOF
           {
-            "Name": "container-log-sanitizer",
-            "Addr": "unix:///run/docker/plugins/container-log-sanitizer.sock"
+            "description": "Container log sanitizer plugin",
+            "interface": {
+              "types": ["docker.logdriver/1.0"],
+              "socket": "plugin.sock"
+            },
+            "entrypoint": ["/container-log-sanitizer"],
+            "network": { "type": "host" },
+            "mounts": [],
+            "env": [
+              {
+                "name": "SANITIZE_PATTERNS",
+                "description": "Regex patterns for log redaction",
+                "settable": ["value"],
+                "value": ""
+              }
+            ]
           }
           EOF
 

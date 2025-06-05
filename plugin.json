@@ -3,12 +3,6 @@
   "Name": "container-log-sanitizer",
   "Description": "A Docker logging driver plugin that obfuscates sensitive data using regex before logs leave the container.",
   "Config": {
-    "Args": {
-      "Name": "sanitizer-config",
-      "Description": "Path to config file with regex patterns (optional)",
-      "Settable": ["value"],
-      "Value": ""
-    },
     "Env": [
       {
         "Name": "SANITIZE_PATTERNS",
