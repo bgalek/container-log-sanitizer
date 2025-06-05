@@ -47,7 +47,9 @@ jobs:
       - name: Install Docker plugin (local)
         run: |
           docker plugin rm -f container-log-sanitizer || true
+          docker plugin ls
           docker plugin create container-log-sanitizer plugin-rootfs
+          docker plugin ls
           docker plugin enable container-log-sanitizer
 
       - name: Run test container with plugin
