@@ -38,6 +38,12 @@ jobs:
           }
           EOF
 
+      - name: List plugin rootfs contents (debug)
+        run: |
+          ls -l plugin-rootfs
+          file plugin-rootfs/container-log-sanitizer
+          cat plugin-rootfs/config.json
+
       - name: Install Docker plugin (local)
         run: |
           docker plugin rm -f container-log-sanitizer || true
