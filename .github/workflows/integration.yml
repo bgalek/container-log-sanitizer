@@ -1,0 +1,57 @@
+name: Integration Test
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Run unit tests
+        run: go test ./redactor
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build plugin image
+        run: docker build -t container-log-sanitizer:test .
+
+      - name: Create plugin rootfs
+        run: |
+          mkdir -p plugin-rootfs
+          docker export $(docker create container-log-sanitizer:test) | tar -C plugin-rootfs -xvf -
+
+      - name: Create plugin config
+        run: |
+          cat > plugin-config.json <<EOF
+          {
+            "Name": "container-log-sanitizer",
+            "Addr": "unix:///run/docker/plugins/container-log-sanitizer.sock"
+          }
+          EOF
+
+      - name: Install Docker plugin (local)
+        run: |
+          docker plugin rm -f container-log-sanitizer
+          docker plugin create container-log-sanitizer ./plugin-rootfs
+          docker plugin enable container-log-sanitizer
+
+      - name: Run test container with plugin
+        run: |
+          docker run --rm --log-driver=container-log-sanitizer -e SANITIZE_PATTERNS='[a-zA-Z]+@example.com' busybox sh -c 'echo "user@example.com"'
+
+      - name: Cleanup plugin
+        if: always()
+        run: |
+          docker plugin disable container-log-sanitizer
+          docker plugin rm container-log-sanitizer
