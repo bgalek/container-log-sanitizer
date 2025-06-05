@@ -40,6 +40,9 @@ jobs:
           }
           EOF
 
+      - name: Move plugin config
+        run: mv plugin-config.json plugin-rootfs/config.json
+
       - name: Install Docker plugin (local)
         run: |
           docker plugin rm -f container-log-sanitizer || true
