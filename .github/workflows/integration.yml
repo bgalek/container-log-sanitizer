@@ -44,10 +44,14 @@ jobs:
           file plugin-rootfs/container-log-sanitizer
           cat plugin-rootfs/config.json
 
+      - name: Archive plugin rootfs
+        run: |
+          tar -C plugin-rootfs -czf plugin-rootfs.tgz .
+
       - name: Install Docker plugin (local)
         run: |
           docker plugin rm -f container-log-sanitizer || true
-          docker plugin create container-log-sanitizer ./plugin-rootfs
+          docker plugin create container-log-sanitizer plugin-rootfs.tgz
           docker plugin enable container-log-sanitizer
 
       - name: Run test container with plugin
